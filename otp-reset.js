@@ -148,7 +148,7 @@
 
     <div class="stcard">
       <h3>🔒 Password</h3>
-      <label>New password <input id="stPass" type="password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters"></label>
+      <label>New password <input id="stPass" type="password" minlength="6" autocomplete="new-password" placeholder="At least 8 characters"></label>
       <div class="err" id="stE3"></div>
       <div class="row"><button type="button" class="primary" id="stSaveW">Change password</button></div>
     </div>
