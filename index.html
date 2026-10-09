@@ -138,6 +138,13 @@
       <div class="row"><button type="button" class="ghost" id="authCancel">Cancel</button><button class="primary" type="submit" id="authBtn">Sign in</button></div>
       <button type="button" class="link" id="switch"></button>
       <button type="button" class="link" id="forgot" style="display:none">Forgot password?</button>
+      <div id="resetBox" style="display:none">
+        <p class="sub">We sent a 6-digit code to your email. Enter it below.</p>
+        <label>Enter code <input id="rcode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label>
+        <label>New password <input id="rnew" type="password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters"></label>
+        <div class="err" id="rerr"></div>
+        <div class="row"><button type="button" class="primary" id="rBtn">Reset password</button></div>
+      </div>
     </form>
   </div>
 </dialog>
@@ -186,5 +193,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="backend.js"></script>
 <script src="app.js"></script>
+<script src="otp-reset.js"></script>
 </body>
 </html>
