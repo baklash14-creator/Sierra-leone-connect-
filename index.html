@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1eb53a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SL Connect">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>SL Connect</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="flag"></div>
+<header><div class="wrap">
+  <div class="top">
+    <div class="logo" data-go="home"><span class="lg" data-logo></span><span class="lt">SL <span>Con</span><b>nect</b></span></div>
+    <div class="right"><button class="ghost hinst inst">📲 Install</button><button class="icon" id="themeBtn" aria-label="Toggle theme"></button><span class="right" id="auth"></span></div>
+  </div>
+  <nav class="menu" id="menu"></nav>
+</div></header>
+
+<main class="wrap">
+<!-- HOME -->
+<section class="page" id="p-home">
+  <div class="hero"><i></i>
+    <h1>Find <span class="rot" id="rot">work</span><br>on SL Connect</h1>
+    <p>Workers, people who need services, house owners and land sellers across Sierra Leone, all in one place.</p>
+    <div id="heroBtns"></div>
+  </div>
+  <h2 class="sec rv">What you can do</h2>
+  <div class="tiles">
+    <div class="tile rv" style="--i:0"><span class="ic">🛠️</span><h3>Find workers</h3><p>Electricians, tailors, drivers, builders and more.</p><span class="badge"><b class="cnt" data-t="service">0</b> listings</span></div>
+    <div class="tile rv" style="--i:1"><span class="ic">💼</span><h3>Get work</h3><p>Post a job you need done or your own skill.</p><span class="badge"><b class="cnt" data-t="job">0</b> listings</span></div>
+    <div class="tile rv" style="--i:2"><span class="ic">🏠</span><h3>Houses for rent</h3><p>List or find a place to live.</p><span class="badge"><b class="cnt" data-t="rent">0</b> listings</span></div>
+    <div class="tile rv" style="--i:3"><span class="ic">🌍</span><h3>Land for sale</h3><p>Sell or buy plots of land.</p><span class="badge"><b class="cnt" data-t="land">0</b> listings</span></div>
+  </div>
+  <h2 class="sec rv">How it works</h2>
+  <div class="tiles steps">
+    <div class="tile step rv" style="--i:0"><h3>Sign in</h3><p>Create a free account with your email.</p></div>
+    <div class="tile step rv" style="--i:1"><h3>Browse or post</h3><p>Search listings or add your own with photos.</p></div>
+    <div class="tile step rv" style="--i:2"><h3>Connect</h3><p>Call or WhatsApp the owner directly.</p></div>
+  </div>
+  <h2 class="sec rv">Made to help you</h2>
+  <div class="tiles">
+    <div class="info rv" style="--i:0"><h3>📸 Photos</h3><p>Add up to 3 photos to every listing.</p></div>
+    <div class="info rv" style="--i:1"><h3>❤️ Save favourites</h3><p>Keep the workers and homes you like.</p></div>
+    <div class="info rv" style="--i:2"><h3>✅ Mark as taken</h3><p>Show when a house is rented or a job is filled.</p></div>
+    <div class="info rv" style="--i:3"><h3>🔎 Smart search</h3><p>Filter by area, type and availability.</p></div>
+  </div>
+  <div class="cta rv"><h2>Ready to get started?</h2><p>Sign in to open the marketplace.</p><div id="ctaBtn"></div></div>
+</section>
+
+<!-- MARKETPLACE -->
+<section class="page" id="p-market">
+  <div class="pagehead"><h1>Marketplace</h1><p>Workers, jobs, houses and land in one place.</p></div>
+  <div class="bar"><button class="primary" id="postBtn">+ Post</button><button class="ghost" id="refBtn" title="Refresh" aria-label="Refresh">↻</button>
+    <input class="search" id="q" type="search" placeholder="Search by name, skill, area...">
+    <select id="locF"></select>
+    <select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+    <label class="chk"><input type="checkbox" id="avail"> Available only</label></div>
+  <nav class="tabs" id="tabs"></nav>
+  <div id="count"></div>
+  <div class="grid" id="list"></div>
+</section>
+
+<!-- ACCOUNT -->
+<section class="page" id="p-account">
+  <div class="prof" id="prof"></div>
+  <nav class="tabs" id="acTabs"></nav>
+  <div class="grid" id="myList"></div>
+</section>
+
+<!-- ABOUT -->
+<section class="page" id="p-about">
+  <div class="pagehead"><h1>About SL Connect</h1><p>Built in Sierra Leone, for Sierra Leone.</p></div>
+  <div class="prose">
+    <p>SL Connect helps hard-working people find jobs and helps people who need a service find the right worker quickly. It is also a simple place to rent out a house or sell land.</p>
+    <p>Many skilled people have no easy way to be seen, and many families struggle to find someone they can trust. We close that gap by putting everyone in one place, with a direct call or WhatsApp message between them.</p>
+  </div>
+  <div class="prose rv co">
+    <span class="lg big" data-logo></span>
+    <div style="flex:1;min-width:220px"><h3 style="margin:0">SL Connect</h3><p style="margin:4px 0 0">A Sierra Leonean startup that connects workers, clients, house owners and land sellers in one simple app.</p></div>
+  </div>
+  <h2 class="sec rv">Meet the founder</h2>
+  <div class="prose rv co">
+    <div class="fwrap"><div class="fphoto" id="fPhoto"></div></div>
+    <div style="flex:1;min-width:220px"><h3 style="margin:0" id="fName"></h3><div class="role">Founder &amp; Developer</div>
+    <p style="margin:8px 0">A young developer who loves building software. He created SL Connect to use technology to help people in Sierra Leone find work, homes and land.</p>
+    <label class="btn ghost" id="fUp" style="display:none">📷 Change photo<input type="file" id="fIn" accept="image/*" hidden></label></div>
+  </div>
+  <div class="two">
+    <div class="info rv"><h3>🎯 Our mission</h3><p>Make it easy for every worker to get work and every person to find the service or home they need.</p></div>
+    <div class="info rv" style="--i:1"><h3>🤝 Our values</h3><p>Honesty, respect and fair opportunity for all, from Freetown to every district.</p></div>
+    <div class="info rv" style="--i:2"><h3>🔒 Stay safe</h3><p>Always meet in person, check documents for land and houses, and never pay before you are sure.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="page" id="p-contact">
+  <div class="pagehead"><h1>Contact us</h1><p>Questions, ideas or problems? We would love to hear from you.</p></div>
+  <div class="two" style="margin-top:14px">
+    <div class="info rv"><h3>📞 Phone / WhatsApp</h3><p id="cPhone"></p></div>
+    <div class="info rv" style="--i:1"><h3>✉️ Email</h3><p id="cMail"></p></div>
+    <div class="info rv" style="--i:2"><h3>📍 Location</h3><p>Freetown, Sierra Leone</p></div>
+  </div>
+  <div class="prose" style="margin-bottom:40px">
+    <h3 style="margin-top:0">Send us a message</h3>
+    <form class="plain" id="cF">
+      <label>Your name <input id="cn" required></label>
+      <label>Your phone or email <input id="cc" required></label>
+      <label>Message <textarea id="cm" rows="4" required></textarea></label>
+      <div class="row"><button class="primary" type="submit">Send on WhatsApp</button></div>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- AUTH -->
+<dialog id="authDlg">
+  <div class="authbox">
+    <aside class="aside">
+      <h3 id="asideT">Welcome back 👋</h3>
+      <ul><li>🛠️ Find skilled workers</li><li>💼 Get hired faster</li><li>🏠 Rent houses</li><li>🌍 Buy and sell land</li></ul>
+    </aside>
+    <form id="authF" novalidate>
+      <h2 id="authTitle">Sign in</h2>
+      <p class="sub" id="authSub"></p>
+      <label id="nameL" style="display:none">Full name <input id="aname" placeholder="e.g. Fatmata Kamara"></label>
+      <label><span id="idLbl">Email or phone</span> <input id="aid" autocomplete="username" placeholder="you@email.com"></label>
+      <label id="phoneL" style="display:none">Phone (optional, for calls) <input id="aphone" inputmode="tel" placeholder="+23276123456"></label>
+      <label>Password <div class="pw"><input id="apass" type="password" autocomplete="current-password" placeholder="Your password"><button type="button" class="eye" id="eye">👁</button></div></label>
+      <div class="meter" id="meter"><i id="meterI"></i></div>
+      <div class="err" id="autherr"></div>
+      <div class="row"><button type="button" class="ghost" id="authCancel">Cancel</button><button class="primary" type="submit" id="authBtn">Sign in</button></div>
+      <button type="button" class="link" id="switch"></button>
+      <button type="button" class="link" id="forgot" style="display:none">Forgot password?</button>
+    </form>
+  </div>
+</dialog>
+
+<!-- POST -->
+<dialog id="dlg">
+  <form id="f">
+    <h2>Post on SL Connect</h2>
+    <label>What are you posting?
+      <select id="type">
+        <option value="service">I'm a worker – offering my service</option>
+        <option value="job">I need a worker – job / service wanted</option>
+        <option value="rent">House for rent</option>
+        <option value="land">Land for sale</option>
+      </select></label>
+    <label>Title <input id="title" required placeholder="e.g. Electrician, 3-bedroom house, 2 plots"></label>
+    <label id="catL">Skill / category <input id="cat" placeholder="e.g. Plumber, Driver, Tailor"></label>
+    <label>Location <input id="loc" required placeholder="e.g. Lumley, Freetown"></label>
+    <label>Price / pay (Le) <input id="price" placeholder="e.g. 2,500 per month"></label>
+    <label>Phone / WhatsApp <input id="phone" required inputmode="tel"></label>
+    <label>Photos (up to 3) <input id="imgIn" type="file" accept="image/*" multiple></label>
+    <div id="prev"></div>
+    <label>Details <textarea id="desc" rows="3" placeholder="Tell people more..."></textarea></label>
+    <div class="row"><button type="button" class="ghost" id="cancel">Cancel</button><button class="primary" type="submit">Publish</button></div>
+  </form>
+</dialog>
+
+<!-- NEW PASSWORD -->
+<dialog id="pwDlg"><form id="pwF"><h2>Set a new password</h2><label>New password <input id="npass" type="password" minlength="6" autocomplete="new-password"></label><div class="err" id="pwerr"></div><div class="row"><button type="button" class="ghost" id="pwCancel">Cancel</button><button class="primary" type="submit">Save</button></div></form></dialog>
+
+<!-- DETAIL -->
+<dialog id="dd"><div id="ddBody"></div></dialog>
+
+<div id="splash"><div><span class="lg" data-logo></span><h1>SL Connect</h1><p>Work · Homes · Land</p><div class="sbar"><i></i></div></div></div>
+<nav class="bnav" id="bnav"></nav>
+<div id="welcome"><div><svg viewBox="0 0 56 56"><circle class="c" cx="28" cy="28" r="26"/><path class="k" d="M16 29l9 9 16-18"/></svg><h2 id="wText"></h2></div></div>
+<div class="toast" id="toast"></div>
+<footer>
+  <div class="fl"><button data-go="home">Home</button><button data-go="about">About</button><button data-go="contact">Contact us</button><button class="inst">📲 Install app</button></div>
+  <div>© SL Connect · Founded by Abu Bakarr Kamara</div>
+  <div>Meet in person and check everything before you pay anyone.</div>
+  <div style="margin-top:6px">Built with help from Claude, an AI by Anthropic.</div>
+</footer>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="backend.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
