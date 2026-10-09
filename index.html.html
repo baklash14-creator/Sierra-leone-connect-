@@ -179,7 +179,7 @@
   <div class="fpstep" id="fp1">
     <div class="fpicon">🔑</div>
     <h2>Forgot password?</h2>
-    <p class="sub">Enter your email and we will send you a 6-digit code.</p>
+    <p class="sub">Enter your email and we will send you a 8-digit code.</p>
     <label>Email <input id="fpEmail" type="email" autocomplete="email" placeholder="you@email.com"></label>
     <div class="err" id="fpErr1"></div>
     <div class="row"><button type="button" class="ghost" id="fpCancel">Cancel</button><button class="primary" type="submit" id="fpSend">Send code</button></div>
@@ -188,8 +188,8 @@
     <div class="fpicon">📩</div>
     <h2>Enter code</h2>
     <p class="sub" id="fpSub"></p>
-    <label>6-digit code <input id="rcode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label>
-    <label>New password <input id="rnew" type="password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters"></label>
+    <label>8-digit code <input id="rcode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label>
+    <label>New password <input id="rnew" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
     <div class="err" id="fpErr2"></div>
     <div class="row"><button type="button" class="ghost" id="fpBack">Back</button><button class="primary" type="button" id="rBtn">Reset password</button></div>
     <button type="button" class="link" id="fpResend">Send the code again</button>
@@ -210,7 +210,7 @@
   <div class="fl"><button data-go="home">Home</button><button data-go="about">About</button><button data-go="contact">Contact us</button><button class="inst">📲 Install app</button></div>
   <div>© SL Connect · Founded by Abu Bakarr Kamara</div>
   <div>Meet in person and check everything before you pay anyone.</div>
-  <div style="margin-top:6px">Built with help from Claude, an AI by Anthropic.</div>
+ 
 </footer>
 
 <script src="config.js"></script>
