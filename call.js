@@ -1,4 +1,4 @@
-/* SL Connect - voice calls inside the chat (WebRTC).
+/* SL Connect - voice and video calls inside the chat (WebRTC).
    Load AFTER chat.js. Needs call.sql run in Supabase first.
    Optional: set window.TURN_SERVERS in index.html so calls also connect on mobile data. */
 (function () {
@@ -11,15 +11,25 @@
   /* ================= styles ================= */
   const st = document.createElement("style");
   st.textContent = `
-.callbtn{flex:none}
-#callUI{position:fixed;inset:0;z-index:9998;background:#0e1a12;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center}
+.callbtn,.vidbtn{flex:none}
+#callUI{position:fixed;inset:0;z-index:9998;background:#0e1a12;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;overflow:hidden}
 #callUI[hidden]{display:none}
+#callUI .clav,#callUI .clname,#callUI .clst,#callUI .clbtns{position:relative;z-index:2}
 .clav{width:110px;height:110px;border-radius:50%;background:#1eb53a;display:grid;place-items:center;font-size:3rem;font-weight:700;margin-bottom:8px}
 .clname{margin:0;font-size:1.6rem}
 .clst{margin:0;opacity:.8;min-height:1.4em;font-variant-numeric:tabular-nums}
-.clbtns{display:flex;gap:22px;margin-top:36px}
+.clbtns{display:flex;gap:18px;margin-top:36px;flex-wrap:wrap;justify-content:center}
 .clb{width:76px;height:76px;border-radius:50%;border:0;color:#fff;font:600 .85rem system-ui,sans-serif;cursor:pointer;background:#444}
-.clb.red{background:#e0245e}.clb.grn{background:#1eb53a}.clb.on{background:#fff;color:#111}`;
+.clb.red{background:#e0245e}.clb.grn{background:#1eb53a}.clb.on{background:#fff;color:#111}
+#callVid,#callLoc{display:none;background:#000;object-fit:cover}
+#callVid{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+#callLoc{position:absolute;right:14px;top:14px;width:104px;height:140px;border-radius:12px;z-index:3;transform:scaleX(-1);border:2px solid rgba(255,255,255,.4)}
+#callUI.vid #callVid{display:block}
+#callUI.vid.lv #callLoc{display:block}
+#callUI.vid{justify-content:flex-end}
+#callUI.vid .clav{display:none}
+#callUI.vid .clname,#callUI.vid .clst{text-shadow:0 1px 6px rgba(0,0,0,.8)}
+#callUI.vid .clbtns{margin-top:12px;margin-bottom:12px}`;
   document.head.appendChild(st);
 
   /* ================= helpers ================= */
@@ -70,12 +80,14 @@
   const BTN_END = '<button type="button" class="clb red" data-cend>End</button>';
   const BTN_IN = '<button type="button" class="clb red" data-cend>Decline</button><button type="button" class="clb grn" data-cacc>Answer</button>';
   const BTN_LIVE = '<button type="button" class="clb" data-cmute>Mute</button><button type="button" class="clb red" data-cend>End</button>';
+  const BTN_LIVE_V = '<button type="button" class="clb" data-cmute>Mute</button><button type="button" class="clb" data-ccam>Cam off</button><button type="button" class="clb red" data-cend>End</button>';
 
   function ui() {
     let d = $("callUI");
     if (!d) {
       document.body.insertAdjacentHTML("beforeend",
-        '<div id="callUI" hidden><div class="clav"></div><h2 class="clname"></h2><p class="clst"></p><div class="clbtns"></div></div><audio id="callAudio" autoplay playsinline></audio>');
+        '<div id="callUI" hidden><video id="callVid" autoplay playsinline muted></video><video id="callLoc" autoplay playsinline muted></video>' +
+        '<div class="clav"></div><h2 class="clname"></h2><p class="clst"></p><div class="clbtns"></div></div><audio id="callAudio" autoplay playsinline></audio>');
       d = $("callUI");
     }
     return d;
@@ -88,6 +100,15 @@
     d.querySelector(".clbtns").innerHTML = btns;
   }
   const setStatus = t => { const s = document.querySelector("#callUI .clst"); if (s && s.textContent !== t) s.textContent = t; };
+
+  // show the video layout (remote full screen, my camera small)
+  function showVideo() {
+    const d = ui();
+    d.classList.add("vid");
+    const hasCam = !!(call && call.stream && call.stream.getVideoTracks().length);
+    d.classList.toggle("lv", hasCam);
+    if (hasCam) { const l = $("callLoc"); if (l.srcObject !== call.stream) l.srcObject = call.stream; l.play().catch(() => { }); }
+  }
 
   /* ================= ring tone ================= */
   let tone = null, ac = null, tickT = null;
@@ -120,9 +141,16 @@
     sb.from("messages").insert({ conv_id: conv, sender: user.id, body }).then(() => { }, () => { });
   }
 
-  async function mic() {
+  // microphone (and camera for video calls). If the camera is not available we fall back to voice only.
+  async function media(video) {
+    const audio = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+    if (video) {
+      try {
+        return await navigator.mediaDevices.getUserMedia({ audio, video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } } });
+      } catch (e) { toast("Camera not available, using voice only"); }
+    }
     try {
-      return await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+      return await navigator.mediaDevices.getUserMedia({ audio });
     } catch (e) { toast("Allow microphone access to make calls"); return null; }
   }
 
@@ -133,13 +161,20 @@
       const c = e.candidate.toJSON();
       if (call.ready) send("ice", c); else call.outIce.push(c);
     };
-    pc.ontrack = e => { const a = ui() && $("callAudio"); a.srcObject = e.streams[0]; a.play().catch(() => { }); };
+    pc.ontrack = e => {
+      const a = ui() && $("callAudio"); a.srcObject = e.streams[0]; a.play().catch(() => { });
+      if (e.track.kind === "video") {
+        const v = $("callVid"); v.srcObject = e.streams[0]; v.play().catch(() => { });
+        if (call) { call.video = true; showVideo(); }
+      }
+    };
     pc.onconnectionstatechange = () => {
       if (!call || call.pc !== pc) return;
       const s = pc.connectionState;
       if (s === "connected" && !call.t0) {
         call.t0 = Date.now(); clearTimeout(call.ringT); stopRing();
-        paint(call.name, "0:00", BTN_LIVE);
+        paint(call.name, "0:00", call.video ? BTN_LIVE_V : BTN_LIVE);
+        if (call.video) showVideo();
         tickT = setInterval(() => { if (call && call.t0) setStatus(fmt((Date.now() - call.t0) / 1000)); }, 500);
       } else if (s === "failed") finish("Connection failed", true);
       else if (s === "disconnected") {
@@ -159,11 +194,13 @@
       try { if (c.pc) c.pc.close(); } catch (e) { }
     }
     const a = $("callAudio"); if (a) a.srcObject = null;
+    const rv = $("callVid"); if (rv) rv.srcObject = null;
+    const lv = $("callLoc"); if (lv) lv.srcObject = null;
     const d = $("callUI");
     if (d && reason) {
       d.querySelector(".clst").textContent = reason; d.querySelector(".clbtns").innerHTML = "";
-      setTimeout(() => { if (!call) d.hidden = true; }, 1500);
-    } else if (d) d.hidden = true;
+      setTimeout(() => { if (!call) { d.hidden = true; d.classList.remove("vid", "lv"); } }, 1500);
+    } else if (d) { d.hidden = true; d.classList.remove("vid", "lv"); }
   }
 
   // end the call. tell = true when this phone ended it, so the other side is told
@@ -174,27 +211,30 @@
       sendSig(c.id, c.conv, c.peer, kind, null).catch(() => { });
     }
     if (c.role === "caller") {
-      logMsg(c.conv, c.t0 ? "📞 Voice call · " + fmt((Date.now() - c.t0) / 1000)
-        : /declin/i.test(reason) ? "📞 Call declined" : "📞 Missed voice call");
+      const label = c.video ? "Video call" : "Voice call", icon = c.video ? "📹 " : "📞 ";
+      logMsg(c.conv, c.t0 ? icon + label + " · " + fmt((Date.now() - c.t0) / 1000)
+        : /declin/i.test(reason) ? icon + "Call declined" : icon + "Missed " + label.toLowerCase());
     }
     cleanup(reason);
   }
 
   /* ================= caller ================= */
-  async function startCall() {
+  async function startCall(video) {
     if (call) return toast("You are already in a call");
     const cid = curConv(); if (!cid) return toast("Open a chat first");
     const c = await getConv(cid); if (!c) return toast("Could not start the call");
-    const stream = await mic(); if (!stream) return;
-    call = { id: uuid(), conv: cid, peer: c.other, name: c.otherName, role: "caller", stream, pending: [], outIce: [], ready: false, t0: 0 };
+    const stream = await media(!!video); if (!stream) return;
+    const isVideo = stream.getVideoTracks().length > 0;
+    call = { id: uuid(), conv: cid, peer: c.other, name: c.otherName, role: "caller", stream, video: isVideo, pending: [], outIce: [], ready: false, t0: 0 };
     const mine = call.id;
-    paint(c.otherName, "Calling…", BTN_END);
+    paint(c.otherName, isVideo ? "Video calling…" : "Calling…", BTN_END);
+    if (isVideo) showVideo();
     try {
       call.pc = makePC();
       stream.getTracks().forEach(t => call.pc.addTrack(t, stream));
       const o = await call.pc.createOffer();
       await call.pc.setLocalDescription(o);
-      await sendSig(call.id, call.conv, call.peer, "offer", { type: o.type, sdp: o.sdp });
+      await sendSig(call.id, call.conv, call.peer, "offer", { type: o.type, sdp: o.sdp, video: isVideo });
       if (!call || call.id !== mine) return;
       markReady();
       call.ringT = setTimeout(() => finish("No answer", true), 45000);
@@ -209,13 +249,15 @@
     if (call) { sendSig(row.call_id, row.conv_id, row.from_user, "busy", null).catch(() => { }); return; }
     const c = await getConv(row.conv_id);
     if (call) return;
+    const p = row.payload || {};
+    const isVideo = !!p.video;
     call = { id: row.call_id, conv: row.conv_id, peer: row.from_user, name: c ? c.otherName : "Someone", role: "callee",
-      offer: row.payload, pending: [], outIce: [], ready: false, t0: 0 };
-    paint(call.name, "Incoming voice call…", BTN_IN);
+      offer: { type: p.type, sdp: p.sdp }, video: isVideo, pending: [], outIce: [], ready: false, t0: 0 };
+    paint(call.name, isVideo ? "Incoming video call…" : "Incoming voice call…", BTN_IN);
     startRing();
     call.ringT = setTimeout(() => cleanup("Missed call"), 50000);
     if (document.visibilityState !== "visible" && "Notification" in window && Notification.permission === "granted") {
-      const opts = { body: "Incoming voice call", tag: "slc-call", requireInteraction: true, data: { conv: String(row.conv_id) },
+      const opts = { body: isVideo ? "Incoming video call" : "Incoming voice call", tag: "slc-call", requireInteraction: true, data: { conv: String(row.conv_id) },
         icon: new URL("icon-192.png", location.href).href };
       navigator.serviceWorker.getRegistration(new URL("push-scope/", location.href).href)
         .then(r => r ? r.showNotification(call ? call.name : "SL Connect", opts) : new Notification(call ? call.name : "SL Connect", opts))
@@ -226,11 +268,12 @@
   async function answerCall() {
     if (!call || call.role !== "callee" || call.pc) return;
     const mine = call.id; stopRing();
-    const stream = await mic();
+    const stream = await media(call.video);
     if (!call || call.id !== mine) { if (stream) stream.getTracks().forEach(t => t.stop()); return; }
     if (!stream) return finish("Declined", true);
     call.stream = stream; clearTimeout(call.ringT);
     paint(call.name, "Connecting…", BTN_END);
+    if (call.video) showVideo();
     try {
       call.pc = makePC();
       stream.getTracks().forEach(t => call.pc.addTrack(t, stream));
@@ -249,7 +292,7 @@
     if (!call || call.id !== row.call_id) return;
     if (row.kind === "answer" && call.role === "caller" && call.pc && !call.pc.remoteDescription) {
       clearTimeout(call.ringT); setStatus("Connecting…");
-      try { await call.pc.setRemoteDescription(row.payload); await flushIce(); } catch (e) { finish("Could not connect", true); }
+      try { await call.pc.setRemoteDescription({ type: row.payload.type, sdp: row.payload.sdp }); await flushIce(); } catch (e) { finish("Could not connect", true); }
     } else if (row.kind === "ice") {
       if (call.pc && call.pc.remoteDescription) call.pc.addIceCandidate(row.payload).catch(() => { });
       else call.pending.push(row.payload);
@@ -276,13 +319,15 @@
     startSig();
     const h = document.querySelector(".chhead");
     if (h && !h.querySelector(".callbtn")) h.insertAdjacentHTML("beforeend", '<button type="button" class="ghost callbtn" aria-label="Voice call">📞</button>');
+    if (h && !h.querySelector(".vidbtn")) h.insertAdjacentHTML("beforeend", '<button type="button" class="ghost vidbtn" aria-label="Video call">🎥</button>');
   }
   new MutationObserver(sched).observe(document.body, { childList: true, subtree: true });
   sched();
 
   document.addEventListener("click", e => {
     const t = e.target;
-    if (t.closest(".callbtn")) return startCall();
+    if (t.closest(".vidbtn")) return startCall(true);
+    if (t.closest(".callbtn")) return startCall(false);
     if (t.closest("[data-cacc]")) return answerCall();
     if (t.closest("[data-cend]")) return finish(call && call.t0 ? "Call ended" : call && call.role === "callee" ? "Declined" : "Cancelled", true);
     const m = t.closest("[data-cmute]");
@@ -290,6 +335,12 @@
       const off = m.classList.toggle("on");
       call.stream.getAudioTracks().forEach(a => { a.enabled = !off; });
       m.textContent = off ? "Unmute" : "Mute";
+    }
+    const cm = t.closest("[data-ccam]");
+    if (cm && call && call.stream) {
+      const off = cm.classList.toggle("on");
+      call.stream.getVideoTracks().forEach(v => { v.enabled = !off; });
+      cm.textContent = off ? "Cam on" : "Cam off";
     }
   });
 
