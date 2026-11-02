@@ -592,12 +592,19 @@
     }
 
     const callButton = t.closest("#callBtnVoice,.callbtn");
-    if (callButton) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (callMenu && !callMenu.hidden) closeCallMenu();
-      else openCallMenu(callButton);
-      return;
+
+if (callButton) {
+  e.preventDefault();
+  e.stopImmediatePropagation();
+
+  if (callMenu && !callMenu.hidden) {
+    closeCallMenu();
+  } else {
+    openCallMenu(callButton);
+  }
+
+  return false;
+}
     }
 
     if (callMenu && !callMenu.hidden && !t.closest("#callTypeMenu")) {
