@@ -19,8 +19,7 @@
 #fpDlg[open]{animation:fpPop .3s ease both}
 #fpDlg .fpicon{font-size:42px;text-align:center;animation:fpBounce .8s ease both}
 #fpDlg .link{display:block;margin:8px auto 0}
-#callBtnStatic{position:fixed;right:14px;bottom:80px;z-index:50;width:54px;height:54px;border-radius:50%;border:0;background:#1eb53a;color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
-body:has(.chhead .callbtn) #callBtnStatic,body:has(#callBtnVoice) #callBtnStatic,body:has(#callBtnVoice) .chhead .callbtn{display:none}
+body:has(#callBtnVoice) .chhead .callbtn,body:has(#vidBtnVoice) .chhead .vidbtn{display:none}
 #callBtnVoice{flex:none;cursor:pointer}
 @keyframes fpIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
 @keyframes fpPop{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
@@ -211,7 +210,6 @@ body:has(.chhead .callbtn) #callBtnStatic,body:has(#callBtnVoice) #callBtnStatic
 <nav class="bnav" id="bnav"></nav>
 <div id="welcome"><div><svg viewBox="0 0 56 56"><circle class="c" cx="28" cy="28" r="26"/><path class="k" d="M16 29l9 9 16-18"/></svg><h2 id="wText"></h2></div></div>
 <div class="toast" id="toast"></div>
-<button type="button" class="callbtn" id="callBtnStatic" aria-label="Voice call">📞</button>
 <footer>
   <div class="fl"><button data-go="home">Home</button><button data-go="about">About</button><button data-go="contact">Contact us</button><button class="inst">📲 Install app</button></div>
   <div>© SL Connect · Founded by Abu Bakarr Kamara</div>
@@ -254,6 +252,10 @@ body:has(.chhead .callbtn) #callBtnStatic,body:has(#callBtnVoice) #callBtnStatic
     c.type='button';c.id='callBtnVoice';c.className=(v.className||'ghost').replace(/\bcallbtn\b/g,'')+' callbtn';
     c.setAttribute('aria-label','Voice call');c.textContent='📞';
     v.insertAdjacentElement('afterend',c);
+    var vb=document.createElement('button');
+    vb.type='button';vb.id='vidBtnVoice';vb.className=(v.className||'ghost').replace(/\b(callbtn|vidbtn)\b/g,'')+' vidbtn';
+    vb.setAttribute('aria-label','Video call');vb.textContent='🎥';
+    c.insertAdjacentElement('afterend',vb);
   }
   new MutationObserver(function(){if(!q){q=true;requestAnimationFrame(place);}}).observe(document.body,{childList:true,subtree:true});
   place();
