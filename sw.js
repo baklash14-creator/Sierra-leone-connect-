@@ -1,5 +1,4 @@
-```javascript
-const C = "slconnect-v9";
+const C = "slconnect-v10";
 
 const FILES = [
     "./",
@@ -12,6 +11,9 @@ const FILES = [
     "features.js",
     "chat.js",
     "social.js",
+    "admin.js",
+    "invite.js",
+    "admin.css",
     "extra.css",
     "chat.css",
     "manifest.json",
@@ -132,4 +134,3 @@ self.addEventListener("notificationclick", event => {
         })
     );
 });
-```
