@@ -1,4 +1,4 @@
-const C = "slconnect-v11";
+const C = "slconnect-v12";
 
 const FILES = [
     "./",
@@ -14,6 +14,8 @@ const FILES = [
     "admin.js",
     "invite.js",
     "price.js",
+    "read-receipts.js",
+    "featured.js",
     "admin.css",
     "extra.css",
     "chat.css",

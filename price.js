@@ -25,9 +25,9 @@
   if (!$("pf") && bar) {
     bar.insertAdjacentHTML("afterend", `<div class="pf" id="pf">
       <span class="pf-t">💰 Price (Le)</span>
-      <input class="pf-in" id="pfMin" inputmode="numeric" placeholder="Min" aria-label="Minimum price" autocomplete="off">
+      <input class="pf-in" id="pfMin" inputmode="numeric" placeholder="Min price" aria-label="Minimum price" autocomplete="off">
       <span class="pf-dash">to</span>
-      <input class="pf-in" id="pfMax" inputmode="numeric" placeholder="Max" aria-label="Maximum price" autocomplete="off">
+      <input class="pf-in" id="pfMax" inputmode="numeric" placeholder="Max price" aria-label="Maximum price" autocomplete="off">
       <button type="button" class="pf-chip" id="pfPhoto" aria-pressed="false">📷 With photos</button>
       <button type="button" class="pf-clear" id="pfClear" hidden>✕ Clear</button>
     </div>`);
@@ -62,7 +62,8 @@
 
     if (mode === "pl" || mode === "ph") {
       const val = c => { const p = byId[c.dataset.id], v = p ? priceOf(p) : null; return v === null ? (mode === "pl" ? Infinity : -Infinity) : v; };
-      cards.slice().sort((a, b) => mode === "pl" ? val(a) - val(b) : val(b) - val(a)).forEach(c => list.appendChild(c));
+      const ft = c => c.classList.contains("feat") ? 1 : 0;
+      cards.slice().sort((a, b) => (ft(b) - ft(a)) || (mode === "pl" ? val(a) - val(b) : val(b) - val(a))).forEach(c => list.appendChild(c));
     }
 
     const cnt = $("count");
