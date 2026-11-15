@@ -119,4 +119,14 @@
 .pf-chip.on{background:var(--green);border-color:var(--green);color:#fff}
 .pf-clear{min-height:42px;padding:0 10px;background:none;color:#e0245e;font-weight:700;box-shadow:none!important;transform:none!important}
 .pf-clear[hidden]{display:none}
-@media (max-width:480px){.pf-t{flex:1 0 100%}.pf-in{max-width:none}.pf-chip{flex:1 1 auto}}
+@media (max-width:480px){.pf-t{display:none}.pf-in{max-width:none}.pf-chip{flex:1 1 auto}}
+
+/* ===== featured posts + views ===== */
+.card.feat{box-shadow:0 0 0 2px #f5a623,0 10px 26px rgba(245,166,35,.28)}
+.card .ph{position:relative}
+.feat-badge{position:absolute;left:10px;bottom:10px;padding:4px 10px;border-radius:999px;background:linear-gradient(135deg,#f5a623,#ffcf5c);color:#3a2600;font-size:.74rem;font-weight:800;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.views{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,#0072c6 14%,transparent);color:#0072c6;font-size:.74rem;font-weight:700}
+.views-line{margin:6px 0 2px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,#0072c6 10%,transparent);color:#0072c6;font-weight:700;font-size:.88rem}
+.adm-btn.on{background:rgba(245,166,35,.2);border-color:#f5a623;color:#ffcf5c}
+
+@media (max-width:639px){.adm-act.four{display:grid;grid-template-columns:1fr 1fr}.adm-act.four .adm-btn{flex:none}}

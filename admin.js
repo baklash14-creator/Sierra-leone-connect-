@@ -111,10 +111,10 @@
     const box = $("admRows"); if (!box) return;
     $("admCount").textContent = items.length + " listing" + (items.length === 1 ? "" : "s");
     box.innerHTML = items.length ? items.map(p => {
-      const img = (p.images || [])[0], taken = p.status === "taken";
+      const img = (p.images || [])[0], taken = p.status === "taken", feat = !!(window.slFeat && window.slFeat.meta[p.id] && window.slFeat.meta[p.id].featured);
       return `<article class="adm-row"><div class="adm-thumb" ${img ? `style="background-image:url('${esc(img)}')"` : ""}>${img ? "" : ICON[p.type]}</div>
         <div class="adm-body"><b>${esc(p.title)}</b><small>${LABEL[p.type]} · 📍 ${esc(p.loc)}</small><small>by ${esc(p.by)}${taken ? ` · <em class="adm-pill">${TAKEN[p.type]}</em>` : ""}</small></div>
-        <div class="adm-act"><button class="adm-btn" data-a-view="${esc(p.id)}">View</button><button class="adm-btn wide" data-a-tog="${esc(p.id)}">${taken ? "Reopen" : "Mark " + TAKEN[p.type].toLowerCase()}</button><button class="adm-btn bad" data-a-del="${esc(p.id)}">Delete</button></div></article>`;
+        <div class="adm-act four"><button class="adm-btn" data-a-view="${esc(p.id)}">View</button><button class="adm-btn${feat ? " on" : ""}" data-a-feat="${esc(p.id)}" data-on="${feat ? 0 : 1}">${feat ? "★ Featured" : "☆ Feature"}</button><button class="adm-btn wide" data-a-tog="${esc(p.id)}">${taken ? "Reopen" : "Mark " + TAKEN[p.type].toLowerCase()}</button><button class="adm-btn bad" data-a-del="${esc(p.id)}">Delete</button></div></article>`;
     }).join("") : empty("🔍", "Nothing found", "Try another search.");
   }
   function vPosts() {
@@ -177,6 +177,14 @@
     if ((el = t.closest("[data-a-tab]"))) { S.tab = el.dataset.aTab; S.q = ""; S.type = "all"; show(); return; }
     if ((el = t.closest("[data-a-type]"))) { S.type = el.dataset.aType; document.querySelectorAll(".adm-chip").forEach(b => b.classList.toggle("on", b === el)); postRows(); return; }
     if ((el = t.closest("[data-a-view]"))) { if (posts.some(p => p.id === el.dataset.aView)) detail(el.dataset.aView); else toast("This post is no longer available"); return; }
+
+    if ((el = t.closest("[data-a-feat]"))) {
+      if (!window.slFeat) { toast("Featured posts are not installed yet."); return; }
+      const on = el.dataset.on === "1";
+      try { await window.slFeat.set(el.dataset.aFeat, on); toast(on ? "⭐ Post featured" : "Feature removed"); postRows(); }
+      catch (err) { toast("Run featured.sql in Supabase first."); }
+      return;
+    }
 
     if ((el = t.closest("[data-a-tog]"))) {
       const p = posts.find(x => x.id === el.dataset.aTog); if (!p) return;
