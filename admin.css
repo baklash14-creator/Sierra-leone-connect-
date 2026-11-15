@@ -109,3 +109,14 @@
 @keyframes admSk{to{background-position:-200% 0}}
 @media (min-width:640px){.adm-row{grid-template-columns:auto 1fr auto}.adm-act{grid-column:auto;flex-wrap:nowrap}.adm-btn{flex:none}}
 @media (max-width:360px){.adm{padding:10px;border-radius:20px}.adm-hero h2{font-size:1.25rem}.adm-tab{font-size:.68rem}}
+
+/* ===== marketplace price filter ===== */
+.pf{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.pf-t{font-weight:700;font-size:.9rem;white-space:nowrap}
+.pf-in{flex:1 1 90px;min-width:0;max-width:150px;min-height:42px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.pf-dash{color:var(--muted);font-size:.85rem}
+.pf-chip{min-height:42px;padding:0 14px;border-radius:999px;background:transparent;border:1px solid var(--line);color:var(--text);font-weight:700;font-size:.85rem;box-shadow:none!important;transform:none!important}
+.pf-chip.on{background:var(--green);border-color:var(--green);color:#fff}
+.pf-clear{min-height:42px;padding:0 10px;background:none;color:#e0245e;font-weight:700;box-shadow:none!important;transform:none!important}
+.pf-clear[hidden]{display:none}
+@media (max-width:480px){.pf-t{flex:1 0 100%}.pf-in{max-width:none}.pf-chip{flex:1 1 auto}}
