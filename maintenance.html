@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sierra Leone Connect – Under maintenance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1eb53a; --green-deep: #0f8a28; --blue: #0072c6; --blue-deep: #00518f;
+    --bg: #ffffff; --card: #f4f8f5; --text: #12201a; --muted: #52665a; --line: #dbe6de;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101915; --card: #18251e; --text: #eef5f0; --muted: #a8bbae; --line: #2b3d32; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] { --bg: #101915; --card: #18251e; --text: #eef5f0; --muted: #a8bbae; --line: #2b3d32; color-scheme: dark; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); background: var(--green-deep); }
+  body {
+    margin: 0; min-height: 100%; display: flex; flex-direction: column;
+    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg);
+  }
+  .top {
+    background: linear-gradient(160deg, var(--green) 0%, var(--green-deep) 100%);
+    color: #fff; padding: 1.5rem 1.5rem 4.5rem; text-align: center; position: relative;
+  }
+  .brand { display: inline-flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; }
+  .brand svg { width: 28px; height: 28px; }
+  .gear { position: absolute; left: 50%; bottom: -44px; width: 88px; height: 88px; margin-left: -44px;
+    background: var(--bg); border-radius: 50%; display: grid; place-items: center;
+    box-shadow: 0 0 0 6px var(--bg), 0 8px 24px rgba(0,0,0,.18); z-index: 2; }
+  .gear svg { width: 46px; height: 46px; color: var(--blue); animation: spin 14s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  main { flex: 1; max-width: 34rem; width: 100%; margin: 0 auto; box-sizing: border-box;
+    padding: 4rem 1.5rem 2rem; text-align: center; }
+  h1 { font-size: clamp(2rem, 8.5vw, 3rem); line-height: 1.08; font-weight: 800; margin: 0 0 .9rem; letter-spacing: -.02em; }
+  .lead { font-size: 1.1rem; line-height: 1.55; color: var(--muted); margin: 0 auto 2rem; max-width: 26rem; }
+  .when { font-size: 1rem; color: var(--muted); margin: 0 0 .9rem; }
+  .when b { color: var(--text); }
+  .count { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; margin: 0 auto 2rem; max-width: 26rem; }
+  .cell { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: .9rem .25rem .7rem; }
+  .cell:first-child { border-bottom: 4px solid var(--green); }
+  .cell:nth-child(2) { border-bottom: 4px solid var(--green); }
+  .cell:nth-child(3) { border-bottom: 4px solid var(--blue); }
+  .cell:nth-child(4) { border-bottom: 4px solid var(--blue); }
+  .num { display: block; font-size: clamp(1.8rem, 9vw, 2.6rem); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+  .lab { display: block; font-size: .8rem; color: var(--muted); margin-top: .4rem; }
+  button { font: inherit; font-weight: 700; font-size: 1rem; color: #fff; background: var(--blue); border: 0;
+    border-radius: 999px; padding: .95rem 2rem; cursor: pointer; transition: background .15s; }
+  button:hover { background: var(--blue-deep); }
+  button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+  .bottom { background: linear-gradient(200deg, var(--blue) 0%, var(--blue-deep) 100%); color: #fff;
+    text-align: center; padding: 1.4rem 1.5rem; font-size: .95rem; line-height: 1.5; }
+  .done .count { display: none; }
+  @media (prefers-reduced-motion: reduce) { .gear svg { animation: none; } }
+</style>
+</head>
+<body>
+  <header class="top">
+    <span class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+      Sierra Leone Connect
+    </span>
+    <div class="gear" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </header>
+  <main id="main">
+    <h1>We’re making Sierra Leone Connect better</h1>
+    <p class="lead" id="lead">The app is under maintenance and can’t be used right now. Thank you for your patience.</p>
+    <p class="when">Back online <b>tomorrow at 10:00 PM</b></p>
+    <div class="count" role="timer" aria-live="off">
+      <div class="cell"><span class="num" id="d">0</span><span class="lab">days</span></div>
+      <div class="cell"><span class="num" id="h">00</span><span class="lab">hours</span></div>
+      <div class="cell"><span class="num" id="m">00</span><span class="lab">minutes</span></div>
+      <div class="cell"><span class="num" id="s">00</span><span class="lab">seconds</span></div>
+    </div>
+    <button type="button" id="btn" onclick="location.reload()">Check again</button>
+  </main>
+  <footer class="bottom">Sorry for the inconvenience. We’ll be back soon.</footer>
+<script>
+  // Back online: Tuesday 17 November 2026, 10:00 PM (Sierra Leone time = UTC)
+  var target = Date.UTC(2026, 10, 17, 22, 0, 0);
+  var p = function (n) { return String(n).padStart(2, "0"); };
+  function tick() {
+    var left = target - Date.now();
+    if (left <= 0) {
+      document.body.classList.add("done");
+      document.getElementById("lead").textContent = "Maintenance is finished. You can open the app again.";
+      document.querySelector(".when").style.display = "none";
+      document.getElementById("btn").textContent = "Open the app";
+      document.getElementById("btn").onclick = function () { location.href = "./"; };
+      return;
+    }
+    var t = Math.floor(left / 1000);
+    document.getElementById("d").textContent = Math.floor(t / 86400);
+    document.getElementById("h").textContent = p(Math.floor(t % 86400 / 3600));
+    document.getElementById("m").textContent = p(Math.floor(t % 3600 / 60));
+    document.getElementById("s").textContent = p(t % 60);
+    setTimeout(tick, 1000);
+  }
+  tick();
+</script>
+</body>
+</html>
