@@ -1,4 +1,4 @@
-const C = "slconnect-v16";
+const C = "slconnect-v17";
 
 const FILES = [
     "./",
