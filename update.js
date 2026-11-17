@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  const APP_VERSION = "2026-11-15.1";
+  const APP_VERSION = "2026-11-17.1";
 
   /* ---------- styles ---------- */
   const st = document.createElement("style");
