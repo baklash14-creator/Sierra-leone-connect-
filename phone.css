@@ -1,0 +1,16 @@
+/* SL Connect: phone fit. Header buttons in one tidy scrolling row, no broken text. */
+@media (max-width:560px){
+  .top{flex-wrap:wrap;row-gap:8px;padding:10px 0}
+  .top .right{width:100%;flex-wrap:nowrap!important;justify-content:flex-start;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .top .right::-webkit-scrollbar{display:none}
+  .top .right>*,.top .right .right>*{flex:none;white-space:nowrap}
+  .top .right .right{width:auto;overflow:visible;display:flex;gap:6px;padding:0}
+  .wt-launch{margin:0!important;padding:8px 10px!important;font-size:.85rem}
+  h1,h2,h3,.card h3{overflow-wrap:anywhere;word-break:normal;hyphens:auto}
+  .pagehead h1{font-size:1.7rem;line-height:1.15}
+  .bar{flex-wrap:wrap}.bar .search{flex:1 1 100%;min-width:0}.bar select{flex:1 1 calc(50% - 6px);min-width:0}
+  .card .acts{flex-wrap:wrap}.card .acts .btn{flex:1 1 40%;text-align:center}
+  .tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.tabs .tab{flex:none;white-space:nowrap}
+  dialog{max-width:96vw}
+  img,video{max-width:100%}
+}
