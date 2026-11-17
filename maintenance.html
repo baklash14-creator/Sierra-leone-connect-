@@ -59,8 +59,15 @@
   button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
   .bottom { background: linear-gradient(200deg, var(--blue) 0%, var(--blue-deep) 100%); color: #fff;
     text-align: center; padding: 1.4rem 1.5rem; font-size: .95rem; line-height: 1.5; }
+  .art{width:min(300px,86%);height:auto;margin:0 auto 1.2rem;display:block;color:var(--text)}
+  .float{animation:fl 3.2s ease-in-out infinite}.float.d2{animation-delay:.5s}.float.d3{animation-delay:1s}.float.d4{animation-delay:1.5s}
+  @keyframes fl{50%{transform:translateY(-6px)}}
+  .new{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1rem 1.1rem;margin:0 auto 2rem;max-width:26rem;text-align:left}
+  .new h2{margin:0 0 .6rem;font-size:1.05rem}.new ul{margin:0;padding:0;list-style:none}
+  .new li{padding:.35rem 0;line-height:1.4;font-size:.95rem;border-top:1px solid var(--line)}.new li:first-child{border-top:0}
+  .done .new .x{display:none}
   .done .count { display: none; }
-  @media (prefers-reduced-motion: reduce) { .gear svg { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .gear svg, .float { animation: none; } }
 </style>
 </head>
 <body>
@@ -74,15 +81,42 @@
     </div>
   </header>
   <main id="main">
+    <svg class="art" viewBox="0 0 320 210" role="img" aria-label="A phone being upgraded with new features">
+      <ellipse cx="160" cy="196" rx="120" ry="9" fill="currentColor" opacity=".08"/>
+      <rect x="104" y="14" width="112" height="176" rx="18" fill="#12201a"/>
+      <rect x="111" y="30" width="98" height="144" rx="8" fill="#fff"/>
+      <rect x="111" y="30" width="98" height="26" rx="8" fill="#1eb53a"/><rect x="111" y="46" width="98" height="10" fill="#1eb53a"/>
+      <rect x="120" y="38" width="44" height="7" rx="3.5" fill="#fff" opacity=".9"/>
+      <rect x="118" y="64" width="40" height="34" rx="7" fill="#e6f6ea"/><rect x="162" y="64" width="40" height="34" rx="7" fill="#dcecf8"/>
+      <rect x="118" y="102" width="40" height="34" rx="7" fill="#dcecf8"/><rect x="162" y="102" width="40" height="34" rx="7" fill="#e6f6ea"/>
+      <rect x="118" y="142" width="84" height="8" rx="4" fill="#dbe6de"/><rect x="118" y="156" width="56" height="8" rx="4" fill="#dbe6de"/>
+      <circle cx="160" cy="182" r="3" fill="#52665a"/>
+      <g class="float"><rect x="14" y="52" width="78" height="30" rx="15" fill="#0072c6"/><text x="53" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">📦 Wanted</text></g>
+      <g class="float d2"><rect x="226" y="40" width="74" height="30" rx="15" fill="#1eb53a"/><text x="263" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">👷 Teams</text></g>
+      <g class="float d3"><rect x="226" y="108" width="76" height="30" rx="15" fill="#0072c6"/><text x="264" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">📍 Towns</text></g>
+      <g class="float d4"><rect x="20" y="118" width="78" height="30" rx="15" fill="#1eb53a"/><text x="59" y="138" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">📥 Requests</text></g>
+    </svg>
     <h1>We’re making Sierra Leone Connect better</h1>
     <p class="lead" id="lead">The app is under maintenance and can’t be used right now. Thank you for your patience.</p>
-    <p class="when">Back online <b>tomorrow at 10:00 PM</b></p>
+    <p class="when">Back online <b>today at 10:00 PM</b> <span id="hrs"></span></p>
+    <p class="when" style="margin-top:-.4rem">Please be patient. The wait is worth it.</p>
     <div class="count" role="timer" aria-live="off">
       <div class="cell"><span class="num" id="d">0</span><span class="lab">days</span></div>
       <div class="cell"><span class="num" id="h">00</span><span class="lab">hours</span></div>
       <div class="cell"><span class="num" id="m">00</span><span class="lab">minutes</span></div>
       <div class="cell"><span class="num" id="s">00</span><span class="lab">seconds</span></div>
     </div>
+    <section class="new">
+      <h2>What’s new when we’re back</h2>
+      <ul>
+        <li>📦 <b>Wanted</b>: post what you need and get offers</li>
+        <li>👷 <b>Teams</b>: workers can team up for bigger jobs</li>
+        <li>📥 <b>Requests</b>: hire or contact people in one inbox</li>
+        <li>✔ <b>Verified badge</b> requests for trusted members</li>
+        <li>📍 <b>Browse by town</b> and 💰 <b>Make an offer</b> on WhatsApp</li>
+        <li>🔔 <b>Saved searches</b>, 📶 data saver and a cleaner phone layout</li>
+      </ul>
+    </section>
     <button type="button" id="btn" onclick="location.reload()">Check again</button>
   </main>
   <footer class="bottom">Sorry for the inconvenience. We’ll be back soon.</footer>
@@ -100,6 +134,8 @@
       document.getElementById("btn").onclick = function () { location.href = "./"; };
       return;
     }
+    var hh = Math.max(1, Math.round(left / 3600000));
+    document.getElementById("hrs").textContent = "(about " + hh + (hh === 1 ? " hour" : " hours") + " from now)";
     var t = Math.floor(left / 1000);
     document.getElementById("d").textContent = Math.floor(t / 86400);
     document.getElementById("h").textContent = p(Math.floor(t % 86400 / 3600));
