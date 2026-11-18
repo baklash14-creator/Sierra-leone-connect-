@@ -57,7 +57,7 @@
         ${tile("invite", "📣", "Invite friends")}${tile("market", "🔎", "Search")}${tile("refresh", "↻", "Refresh")}</div>
       <div class="nv-h">App</div><div class="nv-g">
         ${tile("about", "ℹ️", "About")}${tile("contact", "✉️", "Contact us")}${tile("theme", "🌗", "Dark / light")}
-        ${tile("install", "📲", "Install app")}</div>
+        ${tile("install", "📲", "Install app")}${tile("update", "🔄", "Update app")}</div>
       ${u ? `<button class="nv-out" data-nv-act="signout">Sign out</button>` : ""}</div>`;
     sheet.classList.add("on");
   }
@@ -89,6 +89,7 @@
     else if (a === "contact") go("contact");
     else if (a === "theme") clickId("themeBtn");
     else if (a === "install") { const b = document.querySelector(".inst"); if (b) b.click(); else T("Android: menu ⋮ → Install app. iPhone: Share → Add to Home Screen"); }
+    else if (a === "update") clickId("updBtn");
     else if (a === "signout") clickId("outBtn");
   }, true);
   addEventListener("keydown", e => { if (e.key === "Escape") close(); });

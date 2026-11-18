@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  const APP_VERSION = "2026-11-17.7";
+  const APP_VERSION = "2026-11-17.8";
 
   /* ---------- styles ---------- */
   const st = document.createElement("style");
@@ -93,10 +93,13 @@
       head.classList.add("new");
       head.querySelector(".updl").textContent = "Update available";
       if (footBtn) footBtn.textContent = "⬆️ Update available";
+      /* phones kept showing the old app, so update by itself (once per version, no loops) */
+      let tried = ""; try { tried = sessionStorage.getItem("slc_auto") || ""; } catch (e) {}
+      if (tried !== m[1]) { try { sessionStorage.setItem("slc_auto", m[1]); } catch (e) {} toastMsg("🆕 Updating to the newest version…"); setTimeout(updateNow, 900); return; }
       if (!told) { told = true; toastMsg("🆕 New version ready. Tap Update."); }
     } catch (e) { /* offline: ignore */ }
   }
-  setTimeout(check, 3000);
+  setTimeout(check, 1500);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
   setInterval(check, 10 * 60 * 1000);
 })();
