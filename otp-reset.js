@@ -611,11 +611,16 @@ with check (exists (select 1 from public.admins a where a.user_id = auth.uid()))
     draw();
   }
 
+  // The old separate dashboard is retired: its tools now live in the Control Room (admin.js).
+  window.SLC_ADMIN = { email: viewEmail, announce: viewAnnounce, csv: downloadCsv, loadPosts: loadPosts };
+
   // ---------------- show the button only to admins ----------------
   function syncBtn() {
     const a = $('auth'); if (!a) return;
     const b = $('adBtn');
-    if (!isAdmin) { if (b) b.remove(); return; }
+    if (b) b.remove();
+    return; // single admin: use Account > Admin (Control Room)
+    if (!isAdmin) return;
     if (b) return;
     const btn = document.createElement('button');
     btn.id = 'adBtn'; btn.className = 'ghost'; btn.type = 'button';

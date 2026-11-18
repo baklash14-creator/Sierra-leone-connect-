@@ -11,7 +11,7 @@
     ["rent", "Rentals", "🏠", "#f5a623"],
     ["land", "Land", "🌍", "#8a63d2"]
   ];
-  const TABS = [["home", "📊", "Overview"], ["reports", "🚩", "Reports"], ["posts", "📋", "Listings"], ["users", "👥", "Users"]];
+  const TABS = [["home", "📊", "Overview"], ["reports", "🚩", "Reports"], ["posts", "📋", "Listings"], ["users", "👥", "Users"], ["verify", "✔", "Verify"], ["email", "✉️", "Email"], ["banner", "📣", "Banner"], ["export", "⬇️", "Export"]];
   const S = { tab: "home", q: "", type: "all", stats: null, users: [], ver: new Set() };
   let tok = 0;
 
@@ -148,6 +148,33 @@
     userRows();
   }
 
+  /* ---------- tools moved in from the old dashboard ---------- */
+  async function ext(name) {
+    const v = view(); if (!v) return;
+    if (!window.SLC_ADMIN) { v.innerHTML = empty("⚠️", "Email tools did not load", "Refresh the page and try again."); return; }
+    v.innerHTML = '<div class="adm-ext" id="admExt"></div>';
+    await window.SLC_ADMIN[name]($("admExt"));
+  }
+  async function vVerify(my) {
+    const { data, error } = await sb.from("verify_requests").select("*").eq("status", "pending").order("created_at");
+    if (my !== tok) return;
+    if (error) { view().innerHTML = empty("⚠️", "Verification requests are not switched on", "Run requests.sql in Supabase."); return; }
+    if (!data.length) { view().innerHTML = empty("✔", "No pending requests", "When a member taps Get verified in More, it shows here."); return; }
+    view().innerHTML = data.map(r => { const n = String(r.phone || "").replace(/[^\d]/g, "");
+      return `<div class="adm-card"><b>${esc(r.name || "Member")}</b><p>${esc(r.phone || "")}<br><small>${esc(r.note || "")} · ${fdate(r.created_at)}</small></p>
+      <div class="adm-act">${n ? `<a class="adm-btn" href="https://wa.me/${n}" target="_blank" rel="noopener">WhatsApp</a><a class="adm-btn" href="tel:${esc(r.phone)}">Call</a>` : ""}<button class="adm-btn wide" data-a-vreq="${esc(r.user_id)}">Verify ✔</button></div></div>`; }).join("");
+  }
+  async function vExport() {
+    view().innerHTML = `<div class="adm-card"><b>⬇️ Download your data</b><p><small>Opens in Excel or Google Sheets.</small></p>
+      <div class="adm-act"><button class="adm-btn wide" data-a-csv="posts">All listings (CSV)</button><button class="adm-btn" data-a-csv="users">All members (CSV)</button></div></div>`;
+  }
+  async function csvUsers() {
+    const { data, error } = await sb.rpc("admin_users"); if (error) { toast("Could not load members"); return; }
+    const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"', cols = Object.keys(data[0] || { uname: 1 });
+    const csv = [cols.join(",")].concat(data.map(r => cols.map(c => q(r[c])).join(","))).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv" })); a.download = "sl-connect-members.csv"; a.click();
+  }
+
   /* ---------- router ---------- */
   async function show() {
     setTabs();
@@ -158,6 +185,10 @@
       if (tab === "home") await vHome(my);
       else if (tab === "reports") await vReports(my);
       else if (tab === "posts") vPosts();
+      else if (tab === "verify") await vVerify(my);
+      else if (tab === "email") await ext("email");
+      else if (tab === "banner") await ext("announce");
+      else if (tab === "export") vExport();
       else await vUsers(my);
     } catch (err) {
       if (my === tok) v.innerHTML = empty("⚠️", "Could not load this page", esc(CB.msg(err)) + ". Did you run chat.sql in Supabase?");
@@ -217,6 +248,17 @@
       if (error) { toast("Could not update: " + CB.msg(error)); return; }
       if (u) u.is_banned = on;
       toast(on ? "User banned" : "User unbanned"); userRows();
+      return;
+    }
+
+    if ((el = t.closest("[data-a-vreq]"))) {
+      const id = el.dataset.aVreq, { error } = await sb.rpc("admin_set_verified", { target: id, make: true });
+      if (error) { toast("Run admin.sql in Supabase first."); return; }
+      await sb.from("verify_requests").update({ status: "done" }).eq("user_id", id); toast("User verified ✔"); show(); return;
+    }
+    if ((el = t.closest("[data-a-csv]"))) {
+      if (el.dataset.aCsv === "users") await csvUsers();
+      else if (window.SLC_ADMIN) { await window.SLC_ADMIN.loadPosts(); window.SLC_ADMIN.csv(); }
       return;
     }
 
