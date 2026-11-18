@@ -58,7 +58,8 @@
       <div class="nv-h">App</div><div class="nv-g">
         ${tile("about", "ℹ️", "About")}${tile("contact", "✉️", "Contact us")}${tile("theme", "🌗", "Dark / light")}
         ${tile("install", "📲", "Install app")}${tile("update", "🔄", "Update app")}</div>
-      ${u ? `<button class="nv-out" data-nv-act="signout">Sign out</button>` : ""}</div>`;
+      ${u ? `<button class="nv-out" data-nv-act="signout">Sign out</button>` : ""}
+      <p style="text-align:center;color:var(--muted);font-size:.75rem;margin:12px 0 0">Version ${E(document.querySelector(".updfoot small") ? document.querySelector(".updfoot small").textContent.replace("Version ", "") : "")} · <a href="reset.html" style="color:inherit">Fix old screen</a></p></div>`;
     sheet.classList.add("on");
   }
 
