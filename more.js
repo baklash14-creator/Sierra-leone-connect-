@@ -44,7 +44,7 @@
 
   /* ---------- verified set + ratings (best effort) ---------- */
   let verified = new Set();
-  async function loadVerified() { try { const r = await sb.from("verified_users").select("user_id").limit(5000); if (!r.error) verified = new Set((r.data || []).map(x => String(x.user_id))); } catch (e) { } }
+  async function loadVerified() { try { await sb.rpc("slc_expire_verified"); } catch (e) { } try { const r = await sb.from("verified_users").select("user_id").limit(5000); if (!r.error) verified = new Set((r.data || []).map(x => String(x.user_id))); } catch (e) { } }
   loadVerified();
 
   /* ---------- detail page add-ons ---------- */
@@ -107,7 +107,9 @@
       body = ok ? `<div class="mo-card"><p>✔ You are verified. Your posts show the blue badge.</p></div>`
         : error ? `<div class="mo-card">${E(needSql(error))}</div>`
         : data ? `<div class="mo-card"><p>⏳ Your request is ${E(data.status)}. An admin will check your phone number and approve you.</p></div>`
-        : `<div class="mo-card"><b>Get the verified badge</b><p>Verified members are trusted more. An admin will call or WhatsApp the number you give to confirm it is really you.</p>
+        : `<div class="mo-card"><b>⚡ Verified badge: Le 30 for 30 days</b><p>Pay with Monime (Orange Money, Afrimoney or card) and your blue ✔ badge turns on right after payment.</p>
+          <button class="mo-b pri" data-mo="paybadge" style="width:100%">Pay Le 30 with Monime</button><p style="color:var(--muted);font-size:.8rem;margin:8px 0 0">Needs payments switched on by the app owner.</p></div>
+        <div class="mo-card"><b>Or ask an admin to verify you (free)</b><p>An admin will call or WhatsApp the number you give to confirm it is really you.</p>
           <input class="mo-in" id="moVP" inputmode="tel" placeholder="Your phone number" value="${E(u.phone || "")}"><input class="mo-in" id="moVN" maxlength="200" placeholder="Short note (e.g. electrician in Bo)">
           <button class="mo-b pri" data-mo="verreq">Request badge</button></div>`;
     } else if (tabNow === "adm") {
@@ -153,6 +155,14 @@
       const u = me(), { error } = await sb.from("verify_requests").insert({ user_id: u.id, name: u.name, phone: ph, note: $("moVN").value.trim().slice(0, 200) });
       T(error ? needSql(error) : "Request sent. An admin will contact you."); inbox("ver");
     }
+    else if (a === "paybadge") {
+      el.disabled = true; el.textContent = "Opening Monime…";
+      const r = await sb.functions.invoke("verify-checkout", { body: {} });
+      let msg = r.error ? (r.error.message || "Could not start payment.") : (r.data && r.data.error);
+      if (r.error) { try { const j = await r.error.context.json(); if (j && j.error) msg = j.error; } catch (e) { } if (/failed to send|not found|404/i.test(msg || "")) msg = "Payments are not switched on yet."; }
+      if (msg || !r.data || !r.data.url) { T(msg || "Could not start payment."); el.disabled = false; el.textContent = "Pay Le 30 with Monime"; return; }
+      location.href = r.data.url;
+    }
     else if (a === "verok") {
       const { error } = await sb.rpc("admin_set_verified", { target: id, make: true });
       if (error) return T(needSql(error));
@@ -161,6 +171,23 @@
     else if (a === "town") { const sel = $("locF"); if (sel) { sel.value = sel.value === el.dataset.t ? "" : el.dataset.t; sel.dispatchEvent(new Event("change")); } }
     else if (a === "digest") digest();
   }, true);
+
+  /* back from Monime: confirm the payment with the server, then refresh the badge */
+  (async function () {
+    try {
+      const q = new URLSearchParams(location.search); if (q.get("paid") !== "verify" || !me()) return;
+      q.delete("paid"); history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q.toString() : "") + location.hash);
+      T("Checking your payment…");
+      for (let i = 0; i < 4; i++) {
+        const r = await sb.functions.invoke("verify-payment", { body: {} });
+        const st = r.data && r.data.payments && r.data.payments[0] && r.data.payments[0].status;
+        if (st === "successful") { await loadVerified(); T("✔ Payment received. You are verified for 30 days."); return; }
+        if (st === "failed") return T("Payment was not completed.");
+        await new Promise(res => setTimeout(res, 2500));
+      }
+      T("Payment is still processing. Open More → Requests → Get verified in a minute.");
+    } catch (e) { }
+  })();
 
   if (me()) { try { renderMarket(); } catch (e) { } }
 })();
