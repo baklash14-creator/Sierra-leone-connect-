@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SL Connect – Refresh app</title>
+<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#0f8a28;color:#fff;text-align:center;padding:24px}
+.b{max-width:22rem}h1{margin:.3rem 0}p{opacity:.9;line-height:1.5}.s{width:44px;height:44px;border:5px solid #ffffff55;border-top-color:#fff;border-radius:50%;margin:0 auto 14px;animation:r 1s linear infinite}@keyframes r{to{transform:rotate(360deg)}}
+a{color:#fff;font-weight:700}</style></head>
+<body><div class="b"><div class="s"></div><h1>Refreshing SL Connect…</h1><p id="m">Clearing the old saved copy so you get the newest app.</p>
+<p><a href="./?fresh=1">Open the app now</a></p></div>
+<script>
+(async function () {
+  var m = document.getElementById("m");
+  try {
+    if ("serviceWorker" in navigator) { var r = await navigator.serviceWorker.getRegistrations(); await Promise.all(r.map(function (x) { return x.unregister(); })); }
+    if (window.caches) { var k = await caches.keys(); await Promise.all(k.map(function (x) { return caches.delete(x); })); }
+    try { sessionStorage.clear(); } catch (e) {}
+    m.textContent = "Done. Opening the newest app…";
+  } catch (e) { m.textContent = "Opening the app…"; }
+  setTimeout(function () { location.replace("./?fresh=" + Date.now()); }, 700);
+})();
+</script></body></html>
