@@ -192,5 +192,5 @@
     document.addEventListener("click", ev => { const t = ev.target.closest('[data-nv-act="top"]'); if (t) { ev.preventDefault(); ev.stopPropagation(); sheet.classList.remove("on"); openTop(); } }, true);
   }
   loadAvail();
-  window.SLC_LIVE = { loadAvail, openTop };
+  window.SLC_LIVE = { loadAvail, openTop, isAvail };
 })();
