@@ -1,4 +1,4 @@
-const C = "slconnect-v23";
+const C = "slconnect-v24";
 
 const FILES = [
     "./",
@@ -24,6 +24,9 @@ const FILES = [
     "brain.js",
     "gallery.js",
     "alerts.js",
+    "qr.js",
+    "live.js",
+    "jobs.js",
     "ai.js",
     "phone.css",
     "admin.css",
